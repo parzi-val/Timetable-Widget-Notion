@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schedule</title>
+</head>
+<body>
+    <iframe id="roomTable" frameborder="0" width="100%" height="300px"></iframe>
+
+    <script>
+        // Fetch the API data
+        fetch('http://127.0.0.1:5000/api/classes')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                // Check if 'rooms' is present and is an array
+                if (data && Array.isArray(data.classes)) {
+                    // Create the table HTML
+                    let tableHtml = '<table border="1"><tr><th>Course ID</th><th>Time</th><th>Venue</th></tr>';
+                    
+                    // Loop through each room and add its details to the table
+                    data.classes.forEach(course=> {
+                        tableHtml += `<tr><td>${course.id}</td><td>${course.time}</td><td>${course.venue}</td></tr>`;
+                    });
+
+                    tableHtml += '</table>';
+
+                    // Set the HTML content of the iframe
+                    const iframe = document.getElementById('roomTable');
+                    iframe.contentDocument.body.innerHTML = tableHtml;
+                } else {
+                    // Set message in the iframe
+                    const iframe = document.getElementById('roomTable');
+                    iframe.contentDocument.body.innerHTML = '<p>No data available.</p>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching API:', error);
+                // Set error message in the iframe
+                const iframe = document.getElementById('roomTable');
+                iframe.contentDocument.body.innerHTML = '<p>Error fetching data.</p>';
+            });
+    </script>
+</body>
+</html>
