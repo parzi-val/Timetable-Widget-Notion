@@ -1,6 +1,6 @@
 from enum import Enum
 import re
-from datetime import datetime
+from datetime import datetime,timezone
 import pytz
 
 
@@ -122,19 +122,18 @@ def jsonify(key,res):
 
 
 def response():
-    server_time = datetime.utcnow()
+    server_time = datetime.now(timezone.utc)
     indian_tz = pytz.timezone('Asia/Kolkata')
-    indian_time = server_time.replace(tzinfo=pytz.utc).astimezone(indian_tz)
+    indian_time = server_time.astimezone(indian_tz)
     day = indian_time.weekday()
     try:
         (tt := getDayTimeTable(daysList[day])).sort(key=cmp)
     except IndexError as e:
-        res = {'classes' : None,'day' : indian_time}
+        res = {'classes' : None}
     else:
         res = {
             'classes':[jsonify(key,courses[key]+[val]) for key,val in tt],
-            'day' : indian_time
-        }
+            }
     return res
 
 
