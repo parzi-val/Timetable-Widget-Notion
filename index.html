@@ -10,7 +10,7 @@
 
     <script>
         // Fetch the API data
-        fetch('http://127.0.0.1:5000/api/classes')
+        fetch('https://krbala.pythonanywhere.com')
             .then(response => response.json())
             .then(data => {
                 console.log(data)
@@ -32,7 +32,7 @@
                 } else {
                     // Set message in the iframe
                     const iframe = document.getElementById('roomTable');
-                    iframe.contentDocument.body.innerHTML = '<p>No data available.</p>';
+                    iframe.contentDocument.body.innerHTML = '<p>No classes today.</p>';
                 }
             })
             .catch(error => {

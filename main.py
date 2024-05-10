@@ -1,6 +1,7 @@
 from enum import Enum
 import re
 from datetime import datetime
+import pytz
 
 
 class days(Enum):
@@ -15,16 +16,16 @@ class compare:
         self.value = value
         self.end = int("".join(self.value[8:].split(":")))
         self.start = int("".join(self.value[:6].split(":")))
-    
+
     def __gt__(self,other):
         return self.start > other.end
 
     def __eq__(self,other):
         return self.start == other.start
-    
+
     def __lt__(self,other):
         return self.end < other.start
-    
+
 
 with open("slots.txt","r") as f:
     text = f.read()
@@ -53,16 +54,16 @@ def getTimes(slot,day):
 
         for i in slots:
             times.extend(getTimes(i,day))
-        
+
         return times
-    
+
     labStatus = slot.startswith("L")
     day = daysList.index(day)+1
     dayIndex = day*2-1 if labStatus else day*2-2
 
     for i in range(1,15):
         index = i if text[dayIndex][i] == slot else index
-    
+
     time = lab_times[index] if labStatus else theory_times[index]
     return [time] if index != -1 else []
 
@@ -84,7 +85,7 @@ for record in timetable:
         slot = f"{existingSlot}+{slot}"
     courses[f"{courseID} {type}"] = [slot,type,venue]
 
-day = days.MON
+
 
 
 def getDayTimeTable(day:days):
@@ -120,16 +121,19 @@ def jsonify(key,res):
     return res
 
 
-def response(day=None):
-    day = day if day or day == 0 else datetime.now().weekday() 
-    print(day)
+def response():
+    server_time = datetime.utcnow()
+    indian_tz = pytz.timezone('Asia/Kolkata')
+    indian_time = server_time.replace(tzinfo=pytz.utc).astimezone(indian_tz)
+    day = indian_time.weekday()
     try:
         (tt := getDayTimeTable(daysList[day])).sort(key=cmp)
     except IndexError as e:
-        res = {'classes' : None}
+        res = {'classes' : None,'day' : indian_time}
     else:
         res = {
-            'classes':[jsonify(key,courses[key]+[val]) for key,val in tt]
+            'classes':[jsonify(key,courses[key]+[val]) for key,val in tt],
+            'day' : indian_time
         }
     return res
 
