@@ -6,7 +6,7 @@ CORS(app)
 
 @app.route('/api/classes',methods=['GET'])
 def get_rooms():
-    return jsonify(response(0))
+    return jsonify(response(4))
 
 if __name__ == '__main__':
     app.run(debug=True)
