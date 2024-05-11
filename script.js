@@ -231,7 +231,7 @@ else {
     for (const course of data) {
         tableHtml += `<tr><td style = "border: 1px solid white">${course.id}</td><td style = "border: 1px solid white">${course.time}</td><td style = "border: 1px solid white">${course.venue}</td></tr>`;
     }
-    iframeEle.contentDocument.body.innerHTML = '<div style="display:flex;justify-content:center;align-itmes:center">'+ tableHtml+"</div>";
+    iframeEle.contentDocument.body.innerHTML = '<div style="display:flex;justify-content:center;align-itmes:center">'+ tableHtml+"</table></div>";
 }
 
 function resizeIFrameToFitContent( iFrame ) {
